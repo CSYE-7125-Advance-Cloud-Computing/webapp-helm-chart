@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         CHART_NAME = 'my-helm-chart'
-        REPO_URL = 'https://github.com/your-username/your-repo.git'
+        REPO_URL = 'https://github.com/CSYE-7125-Advance-Cloud-Computing/webapp-helm-chart'
         GITHUB_TOKEN = 'GITHUB_TOKEN'
     }
 
@@ -16,14 +16,16 @@ pipeline {
 
         stage('Lint Helm Chart') {
             steps {
-                sh 'helm lint ./charts/my-helm-chart'
+                sh 'helm lint .'
             }
         }
 
         stage('Semantic Release') {
             steps {
-                sh 'npm install -g semantic-release'
-                sh 'semantic-release'
+                script {
+                    sh 'npm install -g semantic-release'
+                    sh 'semantic-release'
+                }
             }
         }
 
@@ -31,26 +33,26 @@ pipeline {
             steps {
                 script {
                     def chartVersion = sh(returnStdout: true, script: 'semantic-release --dry-run | grep "Release version" | cut -d \':\' -f 2').trim()
-                    sh "sed -i \"s/^version:.*/version: ${chartVersion}/\" ./charts/my-helm-chart/Chart.yaml"
+                    sh "sed -i \"s/^version:.*/version: ${chartVersion}/\" ./charts/${CHART_NAME}/Chart.yaml"
                 }
             }
         }
 
         stage('Package Helm Chart') {
             steps {
-                sh 'helm package ./charts/my-helm-chart'
+                sh 'helm package .'
             }
         }
 
         stage('Create GitHub Release') {
             steps {
                 script {
-                    def chartVersion = sh(returnStdout: true, script: 'helm show chart ./charts/my-helm-chart | grep version | cut -d \':\' -f 2').trim()
-                    def chartFile = "my-helm-chart-${chartVersion}.tgz"
-
-                    sh "curl -X POST -H 'Content-Type: application/gzip' --data-binary @${chartFile} https://your-helm-repo.com/api/charts"
+                    def chartVersion = sh(returnStdout: true, script: 'helm show chart ./charts/${CHART_NAME} | grep version | cut -d \':\' -f 2').trim()
+                    def chartFile = "${CHART_NAME}-${chartVersion}.tgz"
+                    sh "github-release upload --owner MahithChigurupati --repo https://github.com/CSYE-7125-Advance-Cloud-Computing/webapp-helm-chart --tag v${chartVersion} --name \"Release v${chartVersion}\" --file ${chartFile}"
                 }
             }
         }
     }
 }
+
