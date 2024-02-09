@@ -1,0 +1,26 @@
+name: Helm Chart Tests
+
+on:
+    pull_request:
+      branches: [main]
+
+jobs:
+  lint_and_template:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+
+      - name: Install Helm dependencies
+        run: helm dependency build .
+
+      - name: Lint Helm chart
+        run: helm lint .
+
+      - name: Template Helm chart
+        run: helm template .
+

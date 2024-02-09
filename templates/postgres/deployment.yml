@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-db-deployment
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-db
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-db
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-db
+          image: {{ .Values.database.image }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ .Values.database.config.port }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-db-secret
+          volumeMounts:
+            - mountPath: {{ .Values.database.config.mountPath }}
+              name: {{ .Release.Name }}-db
+          resources:
+            limits:
+              cpu: {{ .Values.database.resources.cpuLimit }}
+              memory: {{ .Values.database.resources.memoryLimit }}
+            requests:
+              cpu: {{ .Values.database.resources.cpuRequest }}
+              memory: {{ .Values.database.resources.memoryRequest }}
+      volumes:
+        - name: {{ .Release.Name }}-db
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-db-pv-claim

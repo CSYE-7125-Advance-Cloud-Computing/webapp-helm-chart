@@ -1,0 +1,29 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-db-pv-volume 
+  labels:
+    type: local 
+    app: {{ .Release.Name }}-db
+spec:
+  storageClassName: manual
+  capacity:
+    storage: {{ .Values.database.resources.storage }}
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-db-pv-claim 
+  labels:
+    app: {{ .Release.Name }}-db
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany 
+  resources:
+    requests:
+      storage: {{ .Values.database.resources.storage }}
