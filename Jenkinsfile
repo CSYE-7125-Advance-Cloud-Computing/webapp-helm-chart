@@ -7,6 +7,10 @@ pipeline {
         GITHUB_TOKEN = 'GITHUB_TOKEN'
     }
 
+    tools {
+        nodejs 'nodejs'
+    }
+
     stages {
         stage('Checkout') {
             steps {
