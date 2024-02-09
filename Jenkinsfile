@@ -9,7 +9,6 @@ pipeline {
 
     tools {
         nodejs 'nodejs'
-        
     }
 
     stages {
