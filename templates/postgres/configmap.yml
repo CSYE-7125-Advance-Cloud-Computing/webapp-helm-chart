@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  labels:
+    app: {{ template "webapp.name" . }}
+data:
+  DB_HOST: {{ .Release.Name }}-db-service
+  DB_DIALECT: {{ .Values.database.config.dialect }}
+  DB_URL: jdbc:postgresql://{{ .Release.Name }}-db-service:{{ .Values.database.config.port }}/{{ .Values.database.config.db }}
+

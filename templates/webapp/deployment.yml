@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-webapp-deployment
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-webapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-webapp
+    spec:
+      initContainers:
+        - name: {{ .Release.Name }}-db-migration
+          image: {{ .Values.database.migration.image }}
+          command: ["flyway", "migrate"]
+          env:
+            - name: FLYWAY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-config
+                  key: DB_URL
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-webapp-secret
+          volumeMounts:
+            - name: {{ .Release.Name }}-db-migration-scripts
+              mountPath: {{ .Values.database.migration.mountPath }}
+      containers:
+        - name: {{ .Release.Name }}-webapp
+          image: {{ .Values.webapp.image }}
+          ports:
+            - containerPort: {{ .Values.webapp.port }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-db-secret
+            - configMapRef:
+                name: {{ .Release.Name }}-config
+          resources:
+            limits:
+              cpu: {{ .Values.webapp.cpuLimit }}
+              memory: {{ .Values.webapp.memoryLimit }}
+            requests:
+              cpu: {{ .Values.webapp.cpuRequest }}
+              memory: {{ .Values.webapp.memoryRequest }}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ .Values.webapp.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ .Values.webapp.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 20
+      volumes:
+        - name: {{ .Release.Name }}-db-migration-scripts
+          emptyDir: {}

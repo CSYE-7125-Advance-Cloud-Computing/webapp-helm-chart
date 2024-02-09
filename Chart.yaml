@@ -1,0 +1,9 @@
+apiVersion: v2
+name: webapp
+description: A Helm chart for deploying the web application on Kubernetes.
+type: application
+version: 0.1.0
+appVersion: latest
+maintainers:
+  - name: Mahith Chigurupati
+    email: mahithchigurupati@gmail.com
