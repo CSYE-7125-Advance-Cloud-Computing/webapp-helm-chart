@@ -9,6 +9,7 @@ pipeline {
 
     tools {
         nodejs 'nodejs'
+        github-release 'github-release'
     }
 
     stages {
