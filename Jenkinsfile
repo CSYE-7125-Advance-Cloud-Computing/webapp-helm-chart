@@ -4,6 +4,7 @@ pipeline {
     environment {
         CHART_NAME = 'my-helm-chart'
         REPO_URL = 'https://github.com/your-username/your-repo.git'
+        GITHUB_TOKEN = 'GITHUB_TOKEN'
     }
 
     stages {
