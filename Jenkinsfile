@@ -2,13 +2,17 @@ pipeline {
     agent any
 
     environment {
-        CHART_NAME = 'my-helm-chart'
+        CHART_NAME = 'webapp-helm-chart'
         REPO_URL = 'https://github.com/CSYE-7125-Advance-Cloud-Computing/webapp-helm-chart'
         GITHUB_TOKEN = 'GITHUB_TOKEN'
     }
 
     tools {
         nodejs 'nodejs'
+        
+    }
+
+    tools {
         github-release 'github-release'
     }
 

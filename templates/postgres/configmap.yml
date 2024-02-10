@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-config
   labels:
-    app: {{ template "webapp.name" . }}
+    app: {{ template "webapp-helm-chart.name" . }}
 data:
   DB_HOST: {{ .Release.Name }}-db-service
   DB_DIALECT: {{ .Values.database.config.dialect }}
