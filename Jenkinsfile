@@ -9,6 +9,10 @@ pipeline {
 
     tools {
         nodejs 'nodejs'
+        
+    }
+
+    tools {
         github-release 'github-release'
     }
 
