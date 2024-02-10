@@ -12,10 +12,6 @@ pipeline {
         
     }
 
-    tools {
-        github-release 'github-release'
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -61,6 +57,7 @@ pipeline {
                 script {
                     def chartVersion = sh(returnStdout: true, script: 'helm show chart . | grep version | cut -d \':\' -f 2').trim()
                     def chartFile = "${CHART_NAME}-${chartVersion}.tgz"
+                    sh 'jenkins-plugin-cli --plugins github-release:10.vc8cd6962b_e7f'
                     sh "github-release upload --owner MahithChigurupati --repo https://github.com/CSYE-7125-Advance-Cloud-Computing/webapp-helm-chart --tag v${chartVersion} --name \"Release v${chartVersion}\" --file ${chartFile}"
                 }
             }
