@@ -4,7 +4,7 @@ const config = {
       '@semantic-release/commit-analyzer',
       '@semantic-release/release-notes-generator',
       ['@semantic-release/exec', {
-        prepareCmd: 'rm -f *.tgz && helm package --version ${nextRelease.version} .'
+        prepareCmd: 'helm package --version ${nextRelease.version} .'
       }],
       ['@semantic-release/git', {
         'assets': [],
