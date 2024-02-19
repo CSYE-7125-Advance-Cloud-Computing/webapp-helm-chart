@@ -1,6 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    app: {{ .Release.Name }}-webapp-deployment
   name: {{ .Release.Name }}-webapp-deployment
 spec:
   replicas: {{ .Values.deployment.replicas }}
