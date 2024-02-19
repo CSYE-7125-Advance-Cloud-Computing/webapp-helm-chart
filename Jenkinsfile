@@ -9,10 +9,6 @@ pipeline {
         GITHUB_TOKEN = 'github-access-token'
     }
 
-    tools {
-        github-release 'github-release'
-    }
-
     stages {
         stage('Checkout') {
             steps {
